@@ -29,7 +29,11 @@ attendance = st.number_input(
 )
 
 # Prediction
-probability_needs_improvement = model.predict(
+if st.button("Predict"):
+
+    input_data = np.array([[study_hours, attendance]])
+
+   probability_needs_improvement = model.predict(
     input_data,
     verbose=0
 )[0][0]
