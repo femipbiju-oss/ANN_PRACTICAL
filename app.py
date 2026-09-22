@@ -29,22 +29,18 @@ attendance = st.number_input(
 )
 
 # Prediction
-if st.button("Predict"):
+probability_needs_improvement = model.predict(
+    input_data,
+    verbose=0
+)[0][0]
 
-    input_data = np.array([[study_hours, attendance]])
+probability_good = 1 - probability_needs_improvement
 
-    probability = model.predict(
-        input_data,
-        verbose=0
-    )[0][0]
+if probability_good >= 0.5:
+    st.success("Good Performance")
+else:
+    st.error("Needs Improvement")
 
-    prediction = 1 if probability >= 0.5 else 0
-
-    if prediction == 1:
-        st.success("Good Performance")
-    else:
-        st.error("Needs Improvement")
-
-    st.write(
-        f"Probability of Good Performance: {probability:.2%}"
-    )
+st.write(
+    f"Probability of Good Performance: {probability_good:.2%}"
+)
