@@ -3,8 +3,19 @@ import tensorflow as tf
 import numpy as np
 import pandas as pd
 
-# Load the trained model
-model = tf.keras.models.load_model("employee_performance_ann.keras")
+
+# --------------------------------------------------
+# Load trained ANN model
+# --------------------------------------------------
+
+model = tf.keras.models.load_model(
+    "employee_performance_ann.keras"
+)
+
+
+# --------------------------------------------------
+# Title
+# --------------------------------------------------
 
 st.title("Employee Performance Prediction")
 
@@ -13,7 +24,11 @@ st.write(
     "to predict performance."
 )
 
-# Input fields
+
+# --------------------------------------------------
+# User Inputs
+# --------------------------------------------------
+
 study_hours = st.number_input(
     "Training Hours",
     min_value=0.0,
@@ -28,23 +43,39 @@ attendance = st.number_input(
     value=75.0
 )
 
+
+# --------------------------------------------------
 # Prediction
+# --------------------------------------------------
+
 if st.button("Predict"):
 
-    input_data = np.array([[study_hours, attendance]])
+    # Create input data
+    input_data = np.array([
+        [study_hours, attendance]
+    ])
 
-   probability_needs_improvement = model.predict(
-    input_data,
-    verbose=0
-)[0][0]
+    # Get model output
+    probability_needs_improvement = model.predict(
+        input_data,
+        verbose=0
+    )[0][0]
 
-probability_good = 1 - probability_needs_improvement
+    # Since the model output represents
+    # Needs Improvement probability
+    probability_good = 1 - probability_needs_improvement
 
-if probability_good >= 0.5:
-    st.success("Good Performance")
-else:
-    st.error("Needs Improvement")
+    # Classification
+    if probability_good >= 0.5:
 
-st.write(
-    f"Probability of Good Performance: {probability_good:.2%}"
-)
+        st.success("Good Performance")
+
+    else:
+
+        st.error("Needs Improvement")
+
+    # Display probability
+    st.write(
+        f"Probability of Good Performance: "
+        f"{probability_good:.2%}"
+    )
